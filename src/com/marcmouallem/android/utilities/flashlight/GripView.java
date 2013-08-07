@@ -8,38 +8,91 @@ import android.graphics.Path;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.PathShape;
 import android.graphics.drawable.shapes.RectShape;
+import android.support.v4.view.MarginLayoutParamsCompat;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.Display;
 import android.view.View;
+import android.view.WindowManager;
+import android.widget.LinearLayout;
 
 public class GripView extends View {
+    
+/**********************************************************************************************************************
+ * Member Variables BEGIN
+ **********************************************************************************************************************/
+    
+    int leftMostCoordinate;
+    int topMostCoordinate;
+    int rightMostCoordinate;
+    int bottomMostCoordinate;
+        
+//    WindowManager windowManager;
+//    Display display;
+    
+    
     
     Paint paint;
     PathShape gripLine;
     ShapeDrawable shapeDrawable;
+    Path path;
+    ShapeDrawable line;
+    
+/**********************************************************************************************************************
+ * Member Variables END
+ **********************************************************************************************************************/
 
     public GripView(Context context, AttributeSet attrs) {
         
         super(context, attrs);
         
-//        paint = new Paint();
-//        paint.setColor(Color.RED);
+        
+//        windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+//        display = windowManager.getDefaultDisplay();
+        
+        
+        
+        
+        
+        
+        
+        
+        paint = new Paint();
+        paint.setColor(Color.RED);
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(1);
+        
+        
+        path = new Path();
+        path.moveTo(0, 0);
+        path.lineTo(1000, 1000);
+        path.lineTo(1000, 0);
+        path.lineTo(0, 0);
+        path.close();
+
 //        
-//        Path path = new Path();
-//        path.moveTo(0.0f, 0.0f);
-//        path.lineTo(1.0f, 1.0f);
-//
-//        gripLine = new PathShape(path, 1f, 1f);
+//        shapeDrawable = new ShapeDrawable(new RectShape());
+//        line = new ShapeDrawable(gripLine); 
+//        shapeDrawable.getPaint().setColor(0xff74AC23);
+//        shapeDrawable.setBounds(0, 0, 500, 500);
         
-        int x = 10;
-        int y = 10;
-        int width = 300;
-        int height = 50;
+    }
+    
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+       
+        leftMostCoordinate = getLeft();
+        topMostCoordinate = getTop();
+        rightMostCoordinate = getRight();
+        bottomMostCoordinate = getBottom();
         
-        shapeDrawable = new ShapeDrawable(new RectShape());
-        shapeDrawable.getPaint().setColor(0xff74AC23);
-        shapeDrawable.setBounds(x, y, x + width, y + height);
+        Log.v("member", "leftMostCoordinate: " + leftMostCoordinate);
+        Log.v("member", "topMostCoordinate: " + topMostCoordinate);
+        Log.v("member", "rightMostCoordinate: " + rightMostCoordinate);
+        Log.v("member", "bottomMostCoordinate: " + bottomMostCoordinate);
         
+        setMeasuredDimension(rightMostCoordinate - leftMostCoordinate, bottomMostCoordinate - topMostCoordinate);
+       
     }
     
     @Override
@@ -47,88 +100,10 @@ public class GripView extends View {
         
         super.onDraw(canvas);
         
-//        gripLine.draw(canvas, paint);
-        shapeDrawable.draw(canvas);
-        Log.d("blarkar", "drawed");
+        
+        
+        canvas.drawPath(path, paint);
+        
     }
-    
-
-//    private PathShape gripLine;
-//
-//    public GripView(Context context) {
-//
-//        super(context);
-//
-//        int x = 10;
-//        int y = 10;
-//        int width = 300;
-//        int height = 50;
-//
-//        Path path = new Path();
-//        path.moveTo(0.0f, 0.0f);
-//        path.lineTo(1.0f, 1.0f);
-//
-//        gripLine = new PathShape(path, 1f, 1f);
-//
-////        mDrawable = new ShapeDrawable(new RectShape());
-////
-////        mDrawable.getPaint().setColor(0xff74AC23);
-////        mDrawable.setBounds(x, y, x + width, y + height);
-//
-//    }
-//
-//    public GripView(Context context, AttributeSet attrs) {
-//        super(context, attrs);
-//
-//        int x = 10;
-//        int y = 10;
-//        int width = 300;
-//        int height = 50;
-//
-//        Path path = new Path();
-//        path.moveTo(0.0f, 0.0f);
-//        path.lineTo(1.0f, 1.0f);
-//
-//        gripLine = new PathShape(path, 1f, 1f);
-////        mDrawable = new ShapeDrawable(new RectShape());
-////
-////        mDrawable.getPaint().setColor(0xff74AC23);
-////        mDrawable.setBounds(x, y, x + width, y + height);
-//
-//    }
-//
-//    public GripView(Context context, AttributeSet attrs, int defStyle) {
-//        super(context, attrs, defStyle);
-//
-//        int x = 10;
-//        int y = 10;
-//        int width = 300;
-//        int height = 50;
-//
-//        Path path = new Path();
-//        path.moveTo(0.0f, 0.0f);
-//        path.lineTo(1.0f, 1.0f);
-//
-//        gripLine = new PathShape(path, 1f, 1f);
-////        mDrawable = new ShapeDrawable(new RectShape());
-////
-////        mDrawable.getPaint().setColor(0xff74AC23);
-////        mDrawable.setBounds(x, y, x + width, y + height);
-//
-//    }
-//
-//    @Override
-//    protected void onDraw(Canvas canvas) {
-//        if (canvas != null) {
-//            Paint paint = new Paint();
-//            paint.setColor(Color.RED);
-//        
-//            gripLine.draw(canvas, paint);
-//            Log.d("blarkar", "sdfasdf");
-//        } else {
-//
-//        }
-//
-//    }
 
 }
