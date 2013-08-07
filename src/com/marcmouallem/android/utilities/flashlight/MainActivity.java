@@ -55,7 +55,7 @@ public class MainActivity extends Activity {
         super.onResume();
         Log.v("lifecycle", "Activity resumed.");
         
-//        dimScreen(applicationWindow);
+        dimScreen(applicationWindow);
 
         if (deviceHasCameraFlash) {
             turnOnCameraFlash();
