@@ -44,11 +44,8 @@ public class GripView extends View {
     int numberOfLines;
     int actualLineSpacing;
     
-    
-        
-//    WindowManager windowManager;
-//    Display display;
-    
+    int drawingHeight;
+    int topPadding;
     
     
     Paint paint;
@@ -110,7 +107,7 @@ public class GripView extends View {
         longLineStart = leftMostCoordinate + longLineIndent;
         longLineEnd = rightMostCoordinate - longLineIndent;        
         
-        lineWidth = 2;
+        lineWidth = 3;
         targetLineSpacing = 50;
         
         /* Derived from:
@@ -122,9 +119,12 @@ public class GripView extends View {
         numberOfLines = roundToNearestOdd((height - targetLineSpacing) / (targetLineSpacing + lineWidth));
         
         /* Derived from:
-         * height = numberOfLines * lineWidth + numberOfLines * actualLineWidth + actualLineWidth
+         * height = numberOfLines * lineWidth + numberOfLines * actualLineSpacing + actualLineSpacing
          */
         actualLineSpacing = Math.round((height - (numberOfLines * lineWidth)) / (numberOfLines + 1));
+        
+        drawingHeight = actualLineSpacing + numberOfLines * (lineWidth + actualLineSpacing);
+        topPadding = Math.round((height - drawingHeight) / 2);
         
         paint.setStrokeWidth(lineWidth);
         
@@ -132,8 +132,25 @@ public class GripView extends View {
         Log.v("member", "topMostCoordinate: " + topMostCoordinate);
         Log.v("member", "rightMostCoordinate: " + rightMostCoordinate);
         Log.v("member", "bottomMostCoordinate: " + bottomMostCoordinate);
+        
+        Log.v("member", "width: " + width);
+        Log.v("member", "height: " + height);
+        
+        Log.v("member", "shortLineIndent: " + shortLineIndent);
+        Log.v("member", "longLineIndent: " + longLineIndent);
+        Log.v("member", "shortLineStart: " + shortLineStart);
+        Log.v("member", "shortLineEnd: " + shortLineEnd);
+        Log.v("member", "longLineStart: " + longLineStart);
+        Log.v("member", "longLineEnd: " + longLineEnd);
+        
+        Log.v("member", "lineWidth: " + lineWidth);
+        Log.v("member", "targetLineSpacing: " + targetLineSpacing);
+        
         Log.v("member", "numberOfLines: " + numberOfLines);
         Log.v("member", "acutalLineSpacing: " + actualLineSpacing);
+        
+        Log.v("member", "drawingHeight: " + drawingHeight);
+        Log.v("member", "topPadding: " + topPadding);
         
         setMeasuredDimension(rightMostCoordinate - leftMostCoordinate, bottomMostCoordinate - topMostCoordinate);
        
@@ -159,26 +176,30 @@ public class GripView extends View {
         
         super.onDraw(canvas);
 
-        int y = actualLineSpacing;
+        int y = topPadding + actualLineSpacing;
         for (int lineNumber = 0; 
              lineNumber < numberOfLines - 1; 
-             lineNumber += 2, y += actualLineSpacing) {
+             lineNumber += 2, y += actualLineSpacing + lineWidth) {
             
             path.moveTo(shortLineStart, y);
             path.lineTo(shortLineEnd, y);
+            Log.v("draw", "Drew path from (" + shortLineStart + ", " + y + ") to (" + shortLineEnd + ", " + y + ").");
             
-            y += actualLineSpacing;
+            y += actualLineSpacing + lineWidth;
             
             path.moveTo(longLineStart, y);
             path.lineTo(longLineEnd, y);
+            Log.v("draw", "Drew path from (" + longLineStart + ", " + y + ") to (" + longLineEnd + ", " + y + ").");
             
         }
         
         /* Draw last line without subsequent long line. */
         path.moveTo(shortLineStart, y);
-        path.lineTo(shortLineEnd, y);   
-        path.close();
+        path.lineTo(shortLineEnd, y);
+        Log.v("draw", "Drew path from (" + shortLineStart + ", " + y + ") to (" + shortLineEnd + ", " + y + ").");
         
+        path.close();
+
         canvas.drawPath(path, paint);
         
     }
