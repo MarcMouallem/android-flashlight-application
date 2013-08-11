@@ -6,10 +6,10 @@ import android.graphics.Color;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.drawable.ShapeDrawable;
-import android.graphics.drawable.shapes.PathShape;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 
 public class GripView extends View {
@@ -18,123 +18,166 @@ public class GripView extends View {
  * Member Variables BEGIN
  **********************************************************************************************************************/
     
-    final int SHORT_LINE_INDENT_DP = 110;
-    final int LONG_LINE_INDENT_DP = 110;
-    final int LINE_WIDTH_DP = 3;
-    final int TARGET_LINE_SPACING_DP = 50;
+    final int     SHORT_LINE_INDENT_DP   = 55;
+    final int     LONG_LINE_INDENT_DP    = 25;
+    final int     LINE_WIDTH_DP          = 2;
+    final int     TARGET_LINE_SPACING_DP = 25;
+    final float[] DASH_INTERVALS         = {10, 20};
+    final int     DASH_PHASE             = 0;
     
-    int leftMostCoordinate;
-    int topMostCoordinate;
-    int rightMostCoordinate;
-    int bottomMostCoordinate;
-    
-    int width;
-    int height;
+    DisplayMetrics displayMetrics;  
     
     int shortLineIndentPx;
     int longLineIndentPx;
-    int shortLineStart;
-    int shortLineEnd;
-    int longLineStart;
-    int longLineEnd;    
-    
     int lineWidthPx;
     int targetLineSpacingPx;
     
+    Path           gripLines;
+    Paint          gripLinesPaint;
+    DashPathEffect gripLinesDashEffect;
+      
+    int windowLeftMostCoordinate;
+    int windowTopMostCoordinate;
+    int windowRightMostCoordinate;
+    int windowBottomMostCoordinate; 
+    int windowWidthPx;
+    int windowHeightPx;
+    
+    int shortLineStart;
+    int shortLineEnd;
+    int longLineStart;
+    int longLineEnd;     
     int numberOfLines;
-    int actualLineSpacing;
-    
-    int drawingHeight;
-    int topPadding;
-    
-    Paint linePaint;
-    PathShape gripLine;
-    ShapeDrawable shapeDrawable;
-    Path path;
-    ShapeDrawable line;
-    
+    int actualLineSpacingPx;   
+    int drawingHeightPx;
+    int topPaddingPx;
+           
 /**********************************************************************************************************************
- * Member Variables END
+ * Member Variables END & Constructors BEGIN
  **********************************************************************************************************************/
 
     public GripView(Context context, AttributeSet attrs) {
         
         super(context, attrs);
         
-        linePaint = new Paint();
-        linePaint.setColor(Color.GRAY);
-        linePaint.setStyle(Paint.Style.STROKE);
-        linePaint.setPathEffect(new DashPathEffect(new float[] {10,20}, 0));       
+        displayMetrics = getResources().getDisplayMetrics();
         
-        path = new Path();
+        shortLineIndentPx   = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 
+                                                              SHORT_LINE_INDENT_DP, 
+                                                              displayMetrics);
+        longLineIndentPx    = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 
+                                                              LONG_LINE_INDENT_DP, 
+                                                              displayMetrics);
+        lineWidthPx         = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 
+                                                              LINE_WIDTH_DP, 
+                                                              displayMetrics);
+        targetLineSpacingPx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 
+                                                              TARGET_LINE_SPACING_DP, 
+                                                              displayMetrics);
         
+        Log.v("value", "shortLineIndentPx: " + shortLineIndentPx);
+        Log.v("value", "longLineIndentPx: " + longLineIndentPx);
+        Log.v("value", "lineWidthPx: " + lineWidthPx);
+        Log.v("value", "targetLineSpacingPx: " + targetLineSpacingPx); 
+        
+        gripLines = new Path();       
+        gripLinesPaint = new Paint();
+        gripLinesPaint.setColor(Color.GRAY);
+        gripLinesPaint.setStyle(Paint.Style.STROKE);
+        gripLinesPaint.setStrokeWidth(lineWidthPx);
+        gripLinesDashEffect = new DashPathEffect(DASH_INTERVALS, DASH_PHASE);
+        gripLinesPaint.setPathEffect(gripLinesDashEffect);
+      
     }
+    
+/**********************************************************************************************************************
+ * Constructors END
+ **********************************************************************************************************************/
     
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
        
-        leftMostCoordinate = getLeft();
-        topMostCoordinate = getTop();
-        rightMostCoordinate = getRight();
-        bottomMostCoordinate = getBottom();
-        
-        width = rightMostCoordinate - leftMostCoordinate;
-        height = bottomMostCoordinate - topMostCoordinate;
-        
-        shortLineIndentPx = 110;
-        longLineIndentPx = 40;
-        shortLineStart = leftMostCoordinate + shortLineIndentPx;
-        shortLineEnd = rightMostCoordinate - shortLineIndentPx;
-        longLineStart = leftMostCoordinate + longLineIndentPx;
-        longLineEnd = rightMostCoordinate - longLineIndentPx;        
-        
-        lineWidthPx = 3;
-        targetLineSpacingPx = 50;
-        
+        windowLeftMostCoordinate = getLeft();
+        windowTopMostCoordinate = getTop();
+        windowRightMostCoordinate = getRight();
+        windowBottomMostCoordinate = getBottom();      
+        windowWidthPx = windowRightMostCoordinate - windowLeftMostCoordinate;
+        windowHeightPx = windowBottomMostCoordinate - windowTopMostCoordinate;
+                       
+        shortLineStart = windowLeftMostCoordinate + shortLineIndentPx;
+        shortLineEnd = windowRightMostCoordinate - shortLineIndentPx;
+        longLineStart = windowLeftMostCoordinate + longLineIndentPx;
+        longLineEnd = windowRightMostCoordinate - longLineIndentPx;        
+              
         /* Derived from:
          * height = targetLineSpacing + numberOfLine(targetLineSpacing + lineWidth)
          * Note: By now the height and lineWidth has been calculated. We Have an idea of what we want the spacing to
          * be, we then calculate how many lines can fit comfortably on the screen. We round to the nearest odd number
          * to end and start with a short line.
          */     
-        numberOfLines = roundToNearestOdd((height - targetLineSpacingPx) / (targetLineSpacingPx + lineWidthPx));
+        numberOfLines = roundToNearestOdd((windowHeightPx - targetLineSpacingPx) / (targetLineSpacingPx + lineWidthPx));
         
         /* Derived from:
          * height = numberOfLines * lineWidth + numberOfLines * actualLineSpacing + actualLineSpacing
          */
-        actualLineSpacing = Math.round((height - (numberOfLines * lineWidthPx)) / (numberOfLines + 1));
+        actualLineSpacingPx = Math.round((windowHeightPx - (numberOfLines * lineWidthPx)) / (numberOfLines + 1));
         
-        drawingHeight = actualLineSpacing + numberOfLines * (lineWidthPx + actualLineSpacing);
-        topPadding = Math.round((height - drawingHeight) / 2);
+        drawingHeightPx = actualLineSpacingPx + numberOfLines * (lineWidthPx + actualLineSpacingPx);
+        topPaddingPx = Math.round((windowHeightPx - drawingHeightPx) / 2);       
+  
+        Log.v("value", "windowLeftMostCoordinate: " + windowLeftMostCoordinate);
+        Log.v("value", "windowTopMostCoordinate: " + windowTopMostCoordinate);
+        Log.v("value", "windowRightMostCoordinate: " + windowRightMostCoordinate);
+        Log.v("value", "windowBottomMostCoordinate: " + windowBottomMostCoordinate);    
+        Log.v("value", "windowWidthPx: " + windowWidthPx);
+        Log.v("value", "windowHeightPx: " + windowHeightPx);     
         
-        linePaint.setStrokeWidth(lineWidthPx);
+        Log.v("value", "shortLineStart: " + shortLineStart);
+        Log.v("value", "shortLineEnd: " + shortLineEnd);
+        Log.v("value", "longLineStart: " + longLineStart);
+        Log.v("value", "longLineEnd: " + longLineEnd);
+        Log.v("value", "numberOfLines: " + numberOfLines);
+        Log.v("value", "actualLineSpacingPx: " + actualLineSpacingPx);
+        Log.v("value", "drawingHeightPx: " + drawingHeightPx);
+        Log.v("value", "topPaddingPx: " + topPaddingPx);
         
-        Log.v("member", "leftMostCoordinate: " + leftMostCoordinate);
-        Log.v("member", "topMostCoordinate: " + topMostCoordinate);
-        Log.v("member", "rightMostCoordinate: " + rightMostCoordinate);
-        Log.v("member", "bottomMostCoordinate: " + bottomMostCoordinate);
-        
-        Log.v("member", "width: " + width);
-        Log.v("member", "height: " + height);
-        
-        Log.v("member", "shortLineIndent: " + shortLineIndentPx);
-        Log.v("member", "longLineIndent: " + longLineIndentPx);
-        Log.v("member", "shortLineStart: " + shortLineStart);
-        Log.v("member", "shortLineEnd: " + shortLineEnd);
-        Log.v("member", "longLineStart: " + longLineStart);
-        Log.v("member", "longLineEnd: " + longLineEnd);
-        
-        Log.v("member", "lineWidth: " + lineWidthPx);
-        Log.v("member", "targetLineSpacing: " + targetLineSpacingPx);
-        
-        Log.v("member", "numberOfLines: " + numberOfLines);
-        Log.v("member", "acutalLineSpacing: " + actualLineSpacing);
-        
-        Log.v("member", "drawingHeight: " + drawingHeight);
-        Log.v("member", "topPadding: " + topPadding);
-        
-        setMeasuredDimension(rightMostCoordinate - leftMostCoordinate, bottomMostCoordinate - topMostCoordinate);
+        setMeasuredDimension(windowRightMostCoordinate - windowLeftMostCoordinate, windowBottomMostCoordinate - windowTopMostCoordinate);
        
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        
+        super.onDraw(canvas);
+        
+        canvas.drawColor(Color.BLACK);
+
+        int y = topPaddingPx + actualLineSpacingPx;
+        for (int lineNumber = 0; 
+             lineNumber < numberOfLines - 1; 
+             lineNumber += 2, y += actualLineSpacingPx + lineWidthPx) {
+            
+            gripLines.moveTo(shortLineStart, y);
+            gripLines.lineTo(shortLineEnd, y);
+            Log.v("draw", "Drew path from (" + shortLineStart + ", " + y + ") to (" + shortLineEnd + ", " + y + ").");
+            
+            y += actualLineSpacingPx + lineWidthPx;
+            
+            gripLines.moveTo(longLineStart, y);
+            gripLines.lineTo(longLineEnd, y);
+            Log.v("draw", "Drew path from (" + longLineStart + ", " + y + ") to (" + longLineEnd + ", " + y + ").");
+            
+        }
+        
+        /* Draw last line without subsequent long line. */
+        gripLines.moveTo(shortLineStart, y);
+        gripLines.lineTo(shortLineEnd, y);
+        Log.v("draw", "Drew path from (" + shortLineStart + ", " + y + ") to (" + shortLineEnd + ", " + y + ").");
+        
+        gripLines.close();
+
+        canvas.drawPath(gripLines, gripLinesPaint);
+        
     }
     
     private int roundToNearestOdd(double d) {
@@ -151,42 +194,6 @@ public class GripView extends View {
         return nearestOdd;
         
     }
-
-    @Override
-    protected void onDraw(Canvas canvas) {
-        
-        super.onDraw(canvas);
-        
-        canvas.drawColor(Color.BLACK);
-
-        int y = topPadding + actualLineSpacing;
-        for (int lineNumber = 0; 
-             lineNumber < numberOfLines - 1; 
-             lineNumber += 2, y += actualLineSpacing + lineWidthPx) {
-            
-            path.moveTo(shortLineStart, y);
-            path.lineTo(shortLineEnd, y);
-            Log.v("draw", "Drew path from (" + shortLineStart + ", " + y + ") to (" + shortLineEnd + ", " + y + ").");
-            
-            y += actualLineSpacing + lineWidthPx;
-            
-            path.moveTo(longLineStart, y);
-            path.lineTo(longLineEnd, y);
-            Log.v("draw", "Drew path from (" + longLineStart + ", " + y + ") to (" + longLineEnd + ", " + y + ").");
-            
-        }
-        
-        /* Draw last line without subsequent long line. */
-        path.moveTo(shortLineStart, y);
-        path.lineTo(shortLineEnd, y);
-        Log.v("draw", "Drew path from (" + shortLineStart + ", " + y + ") to (" + shortLineEnd + ", " + y + ").");
-        
-        path.close();
-
-        canvas.drawPath(path, linePaint);
-        
-    }
-    
     
 
 }
