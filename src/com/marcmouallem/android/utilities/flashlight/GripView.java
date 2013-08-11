@@ -1,5 +1,7 @@
 package com.marcmouallem.android.utilities.flashlight;
 
+import java.util.Arrays;
+
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -22,15 +24,16 @@ public class GripView extends View {
     final int     LONG_LINE_INDENT_DP    = 25;
     final int     LINE_WIDTH_DP          = 2;
     final int     TARGET_LINE_SPACING_DP = 25;
-    final float[] DASH_INTERVALS         = {10, 20};
+    final float[] DASH_INTERVALS_DP      = {5, 10};
     final int     DASH_PHASE             = 0;
     
     DisplayMetrics displayMetrics;  
     
-    int shortLineIndentPx;
-    int longLineIndentPx;
-    int lineWidthPx;
-    int targetLineSpacingPx;
+    int     shortLineIndentPx;
+    int     longLineIndentPx;
+    int     lineWidthPx;
+    int     targetLineSpacingPx;
+    float[] dashIntervalsPx;
     
     Path           gripLines;
     Paint          gripLinesPaint;
@@ -75,17 +78,25 @@ public class GripView extends View {
                                                               TARGET_LINE_SPACING_DP, 
                                                               displayMetrics);
         
+        dashIntervalsPx = new float[DASH_INTERVALS_DP.length];
+        for (int index = 0; index < DASH_INTERVALS_DP.length; index++) {
+            dashIntervalsPx[index] = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 
+                                                               DASH_INTERVALS_DP[index], 
+                                                               displayMetrics);
+        }
+        
         Log.v("value", "shortLineIndentPx: " + shortLineIndentPx);
         Log.v("value", "longLineIndentPx: " + longLineIndentPx);
         Log.v("value", "lineWidthPx: " + lineWidthPx);
-        Log.v("value", "targetLineSpacingPx: " + targetLineSpacingPx); 
+        Log.v("value", "targetLineSpacingPx: " + targetLineSpacingPx);
+        Log.v("value", "dashIntervalsPx: " + Arrays.toString(dashIntervalsPx));
         
         gripLines = new Path();       
         gripLinesPaint = new Paint();
         gripLinesPaint.setColor(Color.GRAY);
         gripLinesPaint.setStyle(Paint.Style.STROKE);
         gripLinesPaint.setStrokeWidth(lineWidthPx);
-        gripLinesDashEffect = new DashPathEffect(DASH_INTERVALS, DASH_PHASE);
+        gripLinesDashEffect = new DashPathEffect(dashIntervalsPx, DASH_PHASE);
         gripLinesPaint.setPathEffect(gripLinesDashEffect);
       
     }
