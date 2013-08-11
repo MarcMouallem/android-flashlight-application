@@ -18,6 +18,11 @@ public class GripView extends View {
  * Member Variables BEGIN
  **********************************************************************************************************************/
     
+    final int SHORT_LINE_INDENT_DP = 110;
+    final int LONG_LINE_INDENT_DP = 110;
+    final int LINE_WIDTH_DP = 3;
+    final int TARGET_LINE_SPACING_DP = 50;
+    
     int leftMostCoordinate;
     int topMostCoordinate;
     int rightMostCoordinate;
@@ -26,15 +31,15 @@ public class GripView extends View {
     int width;
     int height;
     
-    int shortLineIndent;
-    int longLineIndent;
+    int shortLineIndentPx;
+    int longLineIndentPx;
     int shortLineStart;
     int shortLineEnd;
     int longLineStart;
     int longLineEnd;    
     
-    int lineWidth;
-    int targetLineSpacing;
+    int lineWidthPx;
+    int targetLineSpacingPx;
     
     int numberOfLines;
     int actualLineSpacing;
@@ -76,15 +81,15 @@ public class GripView extends View {
         width = rightMostCoordinate - leftMostCoordinate;
         height = bottomMostCoordinate - topMostCoordinate;
         
-        shortLineIndent = 110;
-        longLineIndent = 40;
-        shortLineStart = leftMostCoordinate + shortLineIndent;
-        shortLineEnd = rightMostCoordinate - shortLineIndent;
-        longLineStart = leftMostCoordinate + longLineIndent;
-        longLineEnd = rightMostCoordinate - longLineIndent;        
+        shortLineIndentPx = 110;
+        longLineIndentPx = 40;
+        shortLineStart = leftMostCoordinate + shortLineIndentPx;
+        shortLineEnd = rightMostCoordinate - shortLineIndentPx;
+        longLineStart = leftMostCoordinate + longLineIndentPx;
+        longLineEnd = rightMostCoordinate - longLineIndentPx;        
         
-        lineWidth = 3;
-        targetLineSpacing = 50;
+        lineWidthPx = 3;
+        targetLineSpacingPx = 50;
         
         /* Derived from:
          * height = targetLineSpacing + numberOfLine(targetLineSpacing + lineWidth)
@@ -92,17 +97,17 @@ public class GripView extends View {
          * be, we then calculate how many lines can fit comfortably on the screen. We round to the nearest odd number
          * to end and start with a short line.
          */     
-        numberOfLines = roundToNearestOdd((height - targetLineSpacing) / (targetLineSpacing + lineWidth));
+        numberOfLines = roundToNearestOdd((height - targetLineSpacingPx) / (targetLineSpacingPx + lineWidthPx));
         
         /* Derived from:
          * height = numberOfLines * lineWidth + numberOfLines * actualLineSpacing + actualLineSpacing
          */
-        actualLineSpacing = Math.round((height - (numberOfLines * lineWidth)) / (numberOfLines + 1));
+        actualLineSpacing = Math.round((height - (numberOfLines * lineWidthPx)) / (numberOfLines + 1));
         
-        drawingHeight = actualLineSpacing + numberOfLines * (lineWidth + actualLineSpacing);
+        drawingHeight = actualLineSpacing + numberOfLines * (lineWidthPx + actualLineSpacing);
         topPadding = Math.round((height - drawingHeight) / 2);
         
-        linePaint.setStrokeWidth(lineWidth);
+        linePaint.setStrokeWidth(lineWidthPx);
         
         Log.v("member", "leftMostCoordinate: " + leftMostCoordinate);
         Log.v("member", "topMostCoordinate: " + topMostCoordinate);
@@ -112,15 +117,15 @@ public class GripView extends View {
         Log.v("member", "width: " + width);
         Log.v("member", "height: " + height);
         
-        Log.v("member", "shortLineIndent: " + shortLineIndent);
-        Log.v("member", "longLineIndent: " + longLineIndent);
+        Log.v("member", "shortLineIndent: " + shortLineIndentPx);
+        Log.v("member", "longLineIndent: " + longLineIndentPx);
         Log.v("member", "shortLineStart: " + shortLineStart);
         Log.v("member", "shortLineEnd: " + shortLineEnd);
         Log.v("member", "longLineStart: " + longLineStart);
         Log.v("member", "longLineEnd: " + longLineEnd);
         
-        Log.v("member", "lineWidth: " + lineWidth);
-        Log.v("member", "targetLineSpacing: " + targetLineSpacing);
+        Log.v("member", "lineWidth: " + lineWidthPx);
+        Log.v("member", "targetLineSpacing: " + targetLineSpacingPx);
         
         Log.v("member", "numberOfLines: " + numberOfLines);
         Log.v("member", "acutalLineSpacing: " + actualLineSpacing);
@@ -157,13 +162,13 @@ public class GripView extends View {
         int y = topPadding + actualLineSpacing;
         for (int lineNumber = 0; 
              lineNumber < numberOfLines - 1; 
-             lineNumber += 2, y += actualLineSpacing + lineWidth) {
+             lineNumber += 2, y += actualLineSpacing + lineWidthPx) {
             
             path.moveTo(shortLineStart, y);
             path.lineTo(shortLineEnd, y);
             Log.v("draw", "Drew path from (" + shortLineStart + ", " + y + ") to (" + shortLineEnd + ", " + y + ").");
             
-            y += actualLineSpacing + lineWidth;
+            y += actualLineSpacing + lineWidthPx;
             
             path.moveTo(longLineStart, y);
             path.lineTo(longLineEnd, y);
