@@ -8,14 +8,9 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.PathShape;
-import android.graphics.drawable.shapes.RectShape;
-import android.support.v4.view.MarginLayoutParamsCompat;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.Display;
 import android.view.View;
-import android.view.WindowManager;
-import android.widget.LinearLayout;
 
 public class GripView extends View {
     
@@ -47,8 +42,7 @@ public class GripView extends View {
     int drawingHeight;
     int topPadding;
     
-    
-    Paint paint;
+    Paint linePaint;
     PathShape gripLine;
     ShapeDrawable shapeDrawable;
     Path path;
@@ -62,30 +56,12 @@ public class GripView extends View {
         
         super(context, attrs);
         
-        
-//        windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-//        display = windowManager.getDefaultDisplay();
-        
-            
-        
-        paint = new Paint();
-        paint.setColor(Color.GRAY);
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setPathEffect(new DashPathEffect(new float[] {10,20}, 0));
-        
+        linePaint = new Paint();
+        linePaint.setColor(Color.GRAY);
+        linePaint.setStyle(Paint.Style.STROKE);
+        linePaint.setPathEffect(new DashPathEffect(new float[] {10,20}, 0));       
         
         path = new Path();
-//        path.moveTo(20, 20);
-//        path.lineTo(500, 20);
-////        path.lineTo(1000, 0);
-////        path.lineTo(0, 0);
-//        path.close();
-
-//        
-//        shapeDrawable = new ShapeDrawable(new RectShape());
-//        line = new ShapeDrawable(gripLine); 
-//        shapeDrawable.getPaint().setColor(0xff74AC23);
-//        shapeDrawable.setBounds(0, 0, 500, 500);
         
     }
     
@@ -126,7 +102,7 @@ public class GripView extends View {
         drawingHeight = actualLineSpacing + numberOfLines * (lineWidth + actualLineSpacing);
         topPadding = Math.round((height - drawingHeight) / 2);
         
-        paint.setStrokeWidth(lineWidth);
+        linePaint.setStrokeWidth(lineWidth);
         
         Log.v("member", "leftMostCoordinate: " + leftMostCoordinate);
         Log.v("member", "topMostCoordinate: " + topMostCoordinate);
@@ -175,6 +151,8 @@ public class GripView extends View {
     protected void onDraw(Canvas canvas) {
         
         super.onDraw(canvas);
+        
+        canvas.drawColor(Color.BLACK);
 
         int y = topPadding + actualLineSpacing;
         for (int lineNumber = 0; 
@@ -200,7 +178,7 @@ public class GripView extends View {
         
         path.close();
 
-        canvas.drawPath(path, paint);
+        canvas.drawPath(path, linePaint);
         
     }
     
