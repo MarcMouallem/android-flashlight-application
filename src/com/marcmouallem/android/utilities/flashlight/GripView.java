@@ -24,6 +24,7 @@ public class GripView extends View {
     final int     LONG_LINE_INDENT_DP    = 25;
     final int     LINE_WIDTH_DP          = 2;
     final int     TARGET_LINE_SPACING_DP = 25;
+    final int     LINE_COLOR             = Color.parseColor("#585858");
     final float[] DASH_INTERVALS_DP      = {5, 10};
     final int     DASH_PHASE             = 0;
     
@@ -93,7 +94,7 @@ public class GripView extends View {
         
         gripLines = new Path();       
         gripLinesPaint = new Paint();
-        gripLinesPaint.setColor(Color.GRAY);
+        gripLinesPaint.setColor(LINE_COLOR);
         gripLinesPaint.setStyle(Paint.Style.STROKE);
         gripLinesPaint.setStrokeWidth(lineWidthPx);
         gripLinesDashEffect = new DashPathEffect(dashIntervalsPx, DASH_PHASE);
@@ -185,8 +186,6 @@ public class GripView extends View {
         gripLines.lineTo(shortLineEnd, y);
         Log.v("draw", "Drew path from (" + shortLineStart + ", " + y + ") to (" + shortLineEnd + ", " + y + ").");
         
-        gripLines.close();
-
         canvas.drawPath(gripLines, gripLinesPaint);
         
     }
