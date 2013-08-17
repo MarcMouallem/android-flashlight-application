@@ -13,12 +13,20 @@ import android.view.WindowManager;
 
 public class MainActivity extends Activity {
 
+/**********************************************************************************************************************
+ * Member Variables BEGIN
+ **********************************************************************************************************************/
+	
     Context applicationContext;
     PackageManager packageManager;
     Boolean deviceHasCameraFlash;
     Camera camera;
     Camera.Parameters cameraParameters;
     Window applicationWindow;
+    
+/**********************************************************************************************************************
+ * Member Variables END & Lifecycle Methods BEGIN
+ **********************************************************************************************************************/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +95,10 @@ public class MainActivity extends Activity {
         Log.v("action", "Attempted to close application.");
 
     }
+    
+/**********************************************************************************************************************
+ * Lifecycle Methods END
+ **********************************************************************************************************************/
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
