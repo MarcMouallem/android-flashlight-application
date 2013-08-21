@@ -44,7 +44,6 @@ public class MainActivity extends Activity {
             cameraParameters = camera.getParameters();            
             applicationWindow = getWindow();
             
-            
             preventSleep(applicationWindow);
 
         }
