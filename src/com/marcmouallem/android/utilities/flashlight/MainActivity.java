@@ -106,6 +106,14 @@ public class MainActivity extends Activity {
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
+    
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+        	applicationWindow.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
+        }
+    }
 
     private void turnOnCameraFlash() {
         cameraParameters.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
@@ -120,10 +128,8 @@ public class MainActivity extends Activity {
 
     private void dimScreen(Window applicationWindow) {
         WindowManager.LayoutParams layoutParams = applicationWindow.getAttributes();
-        layoutParams.screenBrightness = 0.1f;
-        applicationWindow.setAttributes(layoutParams);
-        
-        applicationWindow.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
+        layoutParams.screenBrightness = 0.01f;
+        applicationWindow.setAttributes(layoutParams);    
     }
     
     private void preventSleep(Window applicationWindow) {
