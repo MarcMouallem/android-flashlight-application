@@ -122,7 +122,7 @@ public class GripView extends View {
         longLineEnd = windowRightMostCoordinate - longLineIndentPx;        
               
         /* Derived from:
-         * height = targetLineSpacing + numberOfLine(targetLineSpacing + lineWidth)
+         * windowHeightPx = targetLineSpacingPx + numberOfLines(targetLineSpacingPx + lineWidthPx)
          * Note: By now the height and lineWidth has been calculated. We Have an idea of what we want the spacing to
          * be, we then calculate how many lines can fit comfortably on the screen. We round to the nearest odd number
          * to end and start with a short line.
@@ -130,7 +130,8 @@ public class GripView extends View {
         numberOfLines = roundToNearestOdd((windowHeightPx - targetLineSpacingPx) / (targetLineSpacingPx + lineWidthPx));
         
         /* Derived from:
-         * height = numberOfLines * lineWidth + numberOfLines * actualLineSpacing + actualLineSpacing
+         * windowHeightPx = numberOfLines * (lineWidthPx + actualLineSpacingPx) + actualLineSpacingPx
+         * Since we start and end with an actualLineSpacingPx we add another actualLineSpacingPx.
          */
         actualLineSpacingPx = Math.round((windowHeightPx - (numberOfLines * lineWidthPx)) / (numberOfLines + 1));
         
