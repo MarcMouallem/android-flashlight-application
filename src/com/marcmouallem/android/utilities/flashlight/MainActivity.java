@@ -120,7 +120,7 @@ public class MainActivity extends Activity {
 
     private void dimScreen(Window applicationWindow) {
         WindowManager.LayoutParams layoutParams = applicationWindow.getAttributes();
-        layoutParams.screenBrightness = 0f;
+        layoutParams.screenBrightness = 0.1f;
         applicationWindow.setAttributes(layoutParams);
         
         applicationWindow.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
