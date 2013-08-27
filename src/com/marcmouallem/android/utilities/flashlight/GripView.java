@@ -24,7 +24,7 @@ public class GripView extends View {
     final int     LONG_LINE_INDENT_DP    = 25;
     final int     LINE_WIDTH_DP          = 2;
     final int     TARGET_LINE_SPACING_DP = 25;
-    final int     LINE_COLOR             = Color.parseColor("#585858");
+    final int     LINE_COLOR             = Color.parseColor("#424242");
     final float[] DASH_INTERVALS_DP      = {5, 10};
     final int     DASH_PHASE             = 0;
     

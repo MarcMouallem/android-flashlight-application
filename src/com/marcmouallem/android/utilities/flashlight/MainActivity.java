@@ -1,13 +1,12 @@
 package com.marcmouallem.android.utilities.flashlight;
 
-import android.R.layout;
+import android.app.Activity;
+import android.content.Context;
+import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.os.Bundle;
-import android.app.Activity;
 import android.util.Log;
 import android.view.Menu;
-import android.content.pm.PackageManager;
-import android.content.Context;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -19,12 +18,10 @@ public class MainActivity extends Activity {
  * Member Variables BEGIN
  **********************************************************************************************************************/
 	
-    Context applicationContext;
-    PackageManager packageManager;
-    Boolean deviceHasCameraFlash;
-    Camera camera;
-    Camera.Parameters cameraParameters;
-    Window applicationWindow;
+    Context        applicationContext;
+    PackageManager packageManager;    
+    Window         applicationWindow;
+    Camera         camera;
     
 /**********************************************************************************************************************
  * Member Variables END & Lifecycle Methods BEGIN
@@ -34,21 +31,12 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+        
         setContentView(R.layout.activity_main);
-
         applicationContext = getApplicationContext();
         packageManager = applicationContext.getPackageManager();
-        deviceHasCameraFlash = packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH);
-
-        if (deviceHasCameraFlash) {
-
-            camera = Camera.open();
-            cameraParameters = camera.getParameters();            
-            applicationWindow = getWindow();
-            
-            preventSleep();
-
-        }
+        applicationWindow = getWindow();
+        applicationWindow.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
     }
 
@@ -64,10 +52,8 @@ public class MainActivity extends Activity {
         super.onResume();
         Log.v("lifecycle", "Activity resumed.");
         
-        if (deviceHasCameraFlash) {
-            turnOnCameraFlash();
-            Log.v("action", "Attempted to turn on camera flash.");
-        }
+        turnOnCameraFlash();
+        Log.v("action", "Attempted to turn on camera flash.");
 
     }
 
@@ -77,10 +63,8 @@ public class MainActivity extends Activity {
         super.onPause();
         Log.v("lifecycle", "Activity paused.");
 
-        if (deviceHasCameraFlash) {
-            turnOffCameraFlash();
-            Log.v("action", "Attempted to turn off camera flash.");
-        }
+        turnOffCameraFlash();
+        Log.v("action", "Attempted to turn off camera flash.");
 
     }
 
@@ -120,6 +104,8 @@ public class MainActivity extends Activity {
     }
 
     private void turnOnCameraFlash() {
+    	camera = Camera.open();
+    	Camera.Parameters cameraParameters = camera.getParameters();	
         cameraParameters.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
         camera.setParameters(cameraParameters);
         camera.startPreview();
@@ -141,10 +127,6 @@ public class MainActivity extends Activity {
         WindowManager.LayoutParams layoutParams = applicationWindow.getAttributes();
         layoutParams.screenBrightness = LayoutParams.BRIGHTNESS_OVERRIDE_NONE;
         applicationWindow.setAttributes(layoutParams);    	
-    }
-    
-    private void preventSleep() {
-    	applicationWindow.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
 }
