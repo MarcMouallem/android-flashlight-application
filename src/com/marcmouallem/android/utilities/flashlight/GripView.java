@@ -86,11 +86,11 @@ public class GripView extends View {
                                                                displayMetrics);
         }
         
-        Log.v("value", "shortLineIndentPx: " + shortLineIndentPx);
-        Log.v("value", "longLineIndentPx: " + longLineIndentPx);
-        Log.v("value", "lineWidthPx: " + lineWidthPx);
-        Log.v("value", "targetLineSpacingPx: " + targetLineSpacingPx);
-        Log.v("value", "dashIntervalsPx: " + Arrays.toString(dashIntervalsPx));
+        Log.v(LogTag.DRAW, "shortLineIndentPx: " + shortLineIndentPx);
+        Log.v(LogTag.DRAW, "longLineIndentPx: " + longLineIndentPx);
+        Log.v(LogTag.DRAW, "lineWidthPx: " + lineWidthPx);
+        Log.v(LogTag.DRAW, "targetLineSpacingPx: " + targetLineSpacingPx);
+        Log.v(LogTag.DRAW, "dashIntervalsPx: " + Arrays.toString(dashIntervalsPx));
         
         gripLines = new Path();       
         gripLinesPaint = new Paint();
@@ -138,21 +138,21 @@ public class GripView extends View {
         drawingHeightPx = actualLineSpacingPx + numberOfLines * (lineWidthPx + actualLineSpacingPx);
         topPaddingPx = Math.round((windowHeightPx - drawingHeightPx) / 2);       
   
-        Log.v("value", "windowLeftMostCoordinate: " + windowLeftMostCoordinate);
-        Log.v("value", "windowTopMostCoordinate: " + windowTopMostCoordinate);
-        Log.v("value", "windowRightMostCoordinate: " + windowRightMostCoordinate);
-        Log.v("value", "windowBottomMostCoordinate: " + windowBottomMostCoordinate);    
-        Log.v("value", "windowWidthPx: " + windowWidthPx);
-        Log.v("value", "windowHeightPx: " + windowHeightPx);     
+        Log.v(LogTag.DRAW, "windowLeftMostCoordinate: " + windowLeftMostCoordinate);
+        Log.v(LogTag.DRAW, "windowTopMostCoordinate: " + windowTopMostCoordinate);
+        Log.v(LogTag.DRAW, "windowRightMostCoordinate: " + windowRightMostCoordinate);
+        Log.v(LogTag.DRAW, "windowBottomMostCoordinate: " + windowBottomMostCoordinate);    
+        Log.v(LogTag.DRAW, "windowWidthPx: " + windowWidthPx);
+        Log.v(LogTag.DRAW, "windowHeightPx: " + windowHeightPx);     
         
-        Log.v("value", "shortLineStart: " + shortLineStart);
-        Log.v("value", "shortLineEnd: " + shortLineEnd);
-        Log.v("value", "longLineStart: " + longLineStart);
-        Log.v("value", "longLineEnd: " + longLineEnd);
-        Log.v("value", "numberOfLines: " + numberOfLines);
-        Log.v("value", "actualLineSpacingPx: " + actualLineSpacingPx);
-        Log.v("value", "drawingHeightPx: " + drawingHeightPx);
-        Log.v("value", "topPaddingPx: " + topPaddingPx);
+        Log.v(LogTag.DRAW, "shortLineStart: " + shortLineStart);
+        Log.v(LogTag.DRAW, "shortLineEnd: " + shortLineEnd);
+        Log.v(LogTag.DRAW, "longLineStart: " + longLineStart);
+        Log.v(LogTag.DRAW, "longLineEnd: " + longLineEnd);
+        Log.v(LogTag.DRAW, "numberOfLines: " + numberOfLines);
+        Log.v(LogTag.DRAW, "actualLineSpacingPx: " + actualLineSpacingPx);
+        Log.v(LogTag.DRAW, "drawingHeightPx: " + drawingHeightPx);
+        Log.v(LogTag.DRAW, "topPaddingPx: " + topPaddingPx);
         
         setMeasuredDimension(windowRightMostCoordinate - windowLeftMostCoordinate, windowBottomMostCoordinate - windowTopMostCoordinate);
        
@@ -185,7 +185,7 @@ public class GripView extends View {
         /* Draw last line without subsequent long line. */
         gripLines.moveTo(shortLineStart, y);
         gripLines.lineTo(shortLineEnd, y);
-        Log.v("draw", "Drew path from (" + shortLineStart + ", " + y + ") to (" + shortLineEnd + ", " + y + ").");
+        Log.v(LogTag.DRAW, "Drew path from (" + shortLineStart + ", " + y + ") to (" + shortLineEnd + ", " + y + ").");
         
         canvas.drawPath(gripLines, gripLinesPaint);
         

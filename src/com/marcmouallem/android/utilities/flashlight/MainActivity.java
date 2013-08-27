@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -43,17 +44,17 @@ public class MainActivity extends Activity {
     @Override
     protected void onStart() {
         super.onStart();
-        Log.v("lifecycle", "Activity started.");
+        Log.v(LogTag.SYSTEM, "Activity started.");
     }
 
     @Override
     protected void onResume() {
 
         super.onResume();
-        Log.v("lifecycle", "Activity resumed.");
+        Log.v(LogTag.SYSTEM, "Activity resumed.");
         
         turnOnCameraFlash();
-        Log.v("action", "Attempted to turn on camera flash.");
+        Log.v(LogTag.SYSTEM, "Attempted to turn on camera flash.");
 
     }
 
@@ -61,10 +62,10 @@ public class MainActivity extends Activity {
     protected void onPause() {
 
         super.onPause();
-        Log.v("lifecycle", "Activity paused.");
+        Log.v(LogTag.SYSTEM, "Activity paused.");
 
         turnOffCameraFlash();
-        Log.v("action", "Attempted to turn off camera flash.");
+        Log.v(LogTag.SYSTEM, "Attempted to turn off camera flash.");
 
     }
 
@@ -72,10 +73,14 @@ public class MainActivity extends Activity {
     protected void onStop() {
 
         super.onStop();
-        Log.v("lifecycle", "Activity stopped.");
+        Log.v(LogTag.SYSTEM, "Activity stopped.");
 
-        finish();
-        Log.v("action", "Attempted to close application.");
+        PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        boolean screenIsOff = !powerManager.isScreenOn();
+        if (screenIsOff) {
+        	finish();
+        	Log.v(LogTag.SYSTEM, "Attempted to close application.");
+        }
 
     }
     
