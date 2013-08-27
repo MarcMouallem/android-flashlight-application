@@ -172,13 +172,13 @@ public class GripView extends View {
             
             gripLines.moveTo(shortLineStart, y);
             gripLines.lineTo(shortLineEnd, y);
-            Log.v("draw", "Drew path from (" + shortLineStart + ", " + y + ") to (" + shortLineEnd + ", " + y + ").");
+            Log.v(LogTag.DRAW, "Drew path from (" + shortLineStart + ", " + y + ") to (" + shortLineEnd + ", " + y + ").");
             
             y += actualLineSpacingPx + lineWidthPx;
             
             gripLines.moveTo(longLineStart, y);
             gripLines.lineTo(longLineEnd, y);
-            Log.v("draw", "Drew path from (" + longLineStart + ", " + y + ") to (" + longLineEnd + ", " + y + ").");
+            Log.v(LogTag.DRAW, "Drew path from (" + longLineStart + ", " + y + ") to (" + longLineEnd + ", " + y + ").");
             
         }
         
